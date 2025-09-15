@@ -1,10 +1,13 @@
 package com.example.calculadora
 
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
+import com.google.android.material.button.MaterialButton
 
 class MainActivity : AppCompatActivity() {
     private lateinit var tvDisplay: TextView
@@ -13,9 +16,23 @@ class MainActivity : AppCompatActivity() {
     private var operand: Double? = null
     private var pendingOp: String? = null
 
+    private lateinit var btnToggleTheme: MaterialButton
+    private lateinit var prefs: SharedPreferences
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        // Inicializa SharedPreferences
+        prefs = getSharedPreferences("theme_prefs", MODE_PRIVATE)
+
+        // Verifica preferência salva e aplica antes de inflar a UI
+        val isDarkMode = prefs.getBoolean("isDarkMode", false)
+        if (isDarkMode) {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+        } else {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+        }
 
         // TextView de display
         tvDisplay = findViewById(R.id.txtResultado)
@@ -58,7 +75,36 @@ class MainActivity : AppCompatActivity() {
         // Botão backspace
         findViewById<Button>(R.id.btnBackspace).setOnClickListener { backspace() }
 
+        // Mapeia o botão
+        btnToggleTheme = findViewById(R.id.btnToggleTheme)
+
+        // Ajusta ícone inicial de acordo com o tema atual
+        updateButtonIcon()
+
+        // Clique do botão
+        btnToggleTheme.setOnClickListener {
+            if (AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES) {
+                // Muda para claro
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+                prefs.edit().putBoolean("isDarkMode", false).apply()
+            } else {
+                // Muda para escuro
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+                prefs.edit().putBoolean("isDarkMode", true).apply()
+            }
+            // Atualiza ícone
+            updateButtonIcon()
+        }
+
         updateDisplay()
+    }
+
+    private fun updateButtonIcon() {
+        if (AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES) {
+            btnToggleTheme.text = "🌙"
+        } else {
+            btnToggleTheme.text = "☀️"
+        }
     }
 
     private fun appendDigit(d: String) {
