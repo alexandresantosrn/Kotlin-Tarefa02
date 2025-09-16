@@ -16,10 +16,13 @@ class MainActivity : AppCompatActivity() {
     private lateinit var tvDisplay: TextView
 
     private var currentInput: String = ""
+
     private var operand: Double? = null
+
     private var pendingOp: String? = null
 
     private lateinit var btnToggleTheme: MaterialButton
+
     private lateinit var prefs: SharedPreferences
 
     private val historyList = mutableListOf<String>()
@@ -141,7 +144,7 @@ class MainActivity : AppCompatActivity() {
 
             operand = null
             pendingOp = null
-            currentInput = result.toString()
+            currentInput = formatNumber(result)
             updateDisplay()
         }
     }
