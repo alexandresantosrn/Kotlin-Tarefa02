@@ -177,7 +177,9 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun updateDisplay() {
-        tvDisplay.text = if (currentInput.isNotEmpty()) currentInput else (operand?.toString() ?: "0")
+        tvDisplay.text = currentInput.ifEmpty {
+            formatNumber(operand)
+        }
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -242,7 +244,9 @@ class MainActivity : AppCompatActivity() {
         addToHistory(historyEntry)
     }
 
-    private fun formatNumber(n: Double): String {
+    private fun formatNumber(n: Double?): String {
+        if (n == null) return "0"
+
         return if (n % 1.0 == 0.0) {
             n.toInt().toString() // mostra como inteiro
         } else {
