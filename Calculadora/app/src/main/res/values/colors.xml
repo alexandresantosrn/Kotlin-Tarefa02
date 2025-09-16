@@ -3,7 +3,7 @@
     <!-- Cores principais do app -->
 
     <color name="colorPrimary">#42A5F5</color> <!-- Azul para operações -->
-    <color name="colorOnPrimary">#FFFFFF</color> <!-- Texto branco em cima do azul -->
+    <color name="colorOnPrimary">#000000</color> <!-- Texto branco em cima do azul -->
 
     <color name="colorSecondary">#9E9E9E</color> <!-- Cinza claro para números -->
     <color name="colorOnSecondary">#000000</color> <!-- Texto preto em cima do cinza -->

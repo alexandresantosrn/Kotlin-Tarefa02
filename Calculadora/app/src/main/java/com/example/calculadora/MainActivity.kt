@@ -2,9 +2,12 @@ package com.example.calculadora
 
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.widget.ArrayAdapter
 import android.widget.Button
+import android.widget.ListView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import com.google.android.material.button.MaterialButton
@@ -18,6 +21,10 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var btnToggleTheme: MaterialButton
     private lateinit var prefs: SharedPreferences
+
+    private val historyList = mutableListOf<String>()
+
+    private val maxHistory = 4
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -78,6 +85,8 @@ class MainActivity : AppCompatActivity() {
         // Mapeia o botão
         btnToggleTheme = findViewById(R.id.btnToggleTheme)
 
+        val btnHistory = findViewById<Button>(R.id.btnHistory)
+
         // Ajusta ícone inicial de acordo com o tema atual
         updateButtonIcon()
 
@@ -96,15 +105,11 @@ class MainActivity : AppCompatActivity() {
             updateButtonIcon()
         }
 
-        updateDisplay()
-    }
-
-    private fun updateButtonIcon() {
-        if (AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES) {
-            btnToggleTheme.text = "🌙"
-        } else {
-            btnToggleTheme.text = "☀️"
+        btnHistory.setOnClickListener {
+            showHistoryPopup()
         }
+
+        updateDisplay()
     }
 
     private fun appendDigit(d: String) {
@@ -130,6 +135,10 @@ class MainActivity : AppCompatActivity() {
         if (operand != null && currentInput.isNotEmpty()) {
             val value = currentInput.toDoubleOrNull() ?: return
             val result = performOperation(operand!!, value, pendingOp)
+
+            // Chama a invocação do histórico
+            prepareHistory(operand, value, pendingOp, result)
+
             operand = null
             pendingOp = null
             currentInput = result.toString()
@@ -182,5 +191,65 @@ class MainActivity : AppCompatActivity() {
         operand = if (opnd.isNaN()) null else opnd
         pendingOp = savedInstanceState.getString("pendingOp")
         updateDisplay()
+    }
+
+    private fun updateButtonIcon() {
+        if (AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES) {
+            btnToggleTheme.text = "🌙"
+        } else {
+            btnToggleTheme.text = "☀️"
+        }
+    }
+
+    private fun showHistoryPopup() {
+        if (historyList.isEmpty()) {
+            AlertDialog.Builder(this)
+                .setTitle("Histórico de Operações")
+                .setMessage("Nenhum histórico disponível")
+                .setPositiveButton("OK", null)
+                .show()
+            return
+        }
+
+        // Inverte a lista e adiciona numeração
+        val numberedHistory = historyList
+            .asReversed()
+            .mapIndexed { index, item -> "${index + 1}. $item" }
+
+        // Cria adaptador para a lista já numerada
+        val adapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, numberedHistory)
+
+        // Cria o ListView dinamicamente
+        val listView = ListView(this).apply {
+            this.adapter = adapter
+        }
+
+        // Mostra o diálogo com o ListView
+        AlertDialog.Builder(this)
+            .setTitle("Histórico de Operações")
+            .setView(listView)
+            .setPositiveButton("Fechar", null)
+            .show()
+    }
+
+    private fun prepareHistory(operand: Double?, value: Double, pendingOp: String?, result: Double) {
+        if (operand == null || pendingOp == null) return
+
+        val historyEntry = "${formatNumber(operand)} $pendingOp ${formatNumber(value)} = ${formatNumber(result)}"
+        addToHistory(historyEntry)
+    }
+
+    private fun formatNumber(n: Double): String {
+        return if (n % 1.0 == 0.0) {
+            n.toInt().toString() // mostra como inteiro
+        } else {
+            n.toString()
+        }
+    }
+    private fun addToHistory(operation: String) {
+        if (historyList.size >= maxHistory) {
+            historyList.removeAt(0) // remove o mais antigo
+        }
+        historyList.add(operation)
     }
 }

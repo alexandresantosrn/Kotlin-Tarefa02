@@ -71,13 +71,11 @@
             android:id="@+id/btnDividir"
             style="@style/Widget.Material3.Button"
             android:textStyle="bold"
-            android:textColor="@color/colorOnSecondary"
             android:text="÷" />
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnMultiplicar"
             style="@style/Widget.Material3.Button"
             android:textStyle="bold"
-            android:textColor="@color/colorOnSecondary"
             android:text="×" />
 
         <!-- Linha 2 -->
@@ -86,15 +84,13 @@
             style="@style/Widget.Material3.Button"
             android:text="7"
             android:textStyle="bold"
-            android:backgroundTint="?attr/colorSecondary"
-            android:textColor="@color/colorOnSecondary"/>
+            android:backgroundTint="?attr/colorSecondary" />
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn8"
             style="@style/Widget.Material3.Button"
             android:text="8"
             android:textStyle="bold"
-            android:backgroundTint="?attr/colorSecondary"
-            android:textColor="@color/colorOnSecondary"/>
+            android:backgroundTint="?attr/colorSecondary" />
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn9"
             style="@style/Widget.Material3.Button"
@@ -106,7 +102,6 @@
             android:id="@+id/btnSubtrair"
             style="@style/Widget.Material3.Button"
             android:textStyle="bold"
-            android:textColor="@color/colorOnSecondary"
             android:text="-"/>
 
         <!-- Linha 3 -->
@@ -115,27 +110,23 @@
             style="@style/Widget.Material3.Button"
             android:text="4"
             android:textStyle="bold"
-            android:backgroundTint="?attr/colorSecondary"
-            android:textColor="@color/colorOnSecondary"/>
+            android:backgroundTint="?attr/colorSecondary" />
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn5"
             style="@style/Widget.Material3.Button"
             android:text="5"
             android:textStyle="bold"
-            android:backgroundTint="?attr/colorSecondary"
-            android:textColor="@color/colorOnSecondary"/>
+            android:backgroundTint="?attr/colorSecondary" />
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn6"
             style="@style/Widget.Material3.Button"
             android:text="6"
             android:textStyle="bold"
-            android:backgroundTint="?attr/colorSecondary"
-            android:textColor="@color/colorOnSecondary"/>
+            android:backgroundTint="?attr/colorSecondary" />
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnSomar"
             style="@style/Widget.Material3.Button"
             android:textStyle="bold"
-            android:textColor="@color/colorOnSecondary"
             android:text="+" />
 
         <!-- Linha 4 -->
@@ -144,27 +135,23 @@
             style="@style/Widget.Material3.Button"
             android:text="1"
             android:textStyle="bold"
-            android:backgroundTint="?attr/colorSecondary"
-            android:textColor="@color/colorOnSecondary"/>
+            android:backgroundTint="?attr/colorSecondary" />
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn2"
             style="@style/Widget.Material3.Button"
             android:text="2"
             android:textStyle="bold"
-            android:backgroundTint="?attr/colorSecondary"
-            android:textColor="@color/colorOnSecondary"/>
+            android:backgroundTint="?attr/colorSecondary" />
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn3"
             style="@style/Widget.Material3.Button"
             android:text="3"
             android:textStyle="bold"
-            android:backgroundTint="?attr/colorSecondary"
-            android:textColor="@color/colorOnSecondary"/>
+            android:backgroundTint="?attr/colorSecondary" />
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnIgual"
             style="@style/Widget.Material3.Button"
             android:textStyle="bold"
-            android:textColor="@color/colorOnSecondary"
             android:text="=" />
 
         <!-- Linha 5 -->
@@ -173,14 +160,21 @@
             style="@style/Widget.Material3.Button"
             android:text="0"
             android:textStyle="bold"
-            android:backgroundTint="?attr/colorSecondary"
-            android:textColor="@color/colorOnSecondary"/>
+            android:backgroundTint="?attr/colorSecondary" />
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnPonto"
             style="@style/Widget.Material3.Button"
             android:text="."
             android:textStyle="bold"
-            android:backgroundTint="?attr/colorSecondary"
-            android:textColor="@color/colorOnSecondary"/>
+            android:backgroundTint="?attr/colorSecondary" />
     </GridLayout>
+
+    <Button
+        android:id="@+id/btnHistory"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Ver Histórico"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_margin="16dp"/>
 </androidx.constraintlayout.widget.ConstraintLayout>
