@@ -178,8 +178,6 @@
             android:text="x²"
             android:textStyle="bold"/>
 
-        <!-- Linha 6 -->
-
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnSqrt"
             style="@style/Widget.Material3.Button"
@@ -191,6 +189,18 @@
             style="@style/Widget.Material3.Button"
             android:text="xʸ"
             android:textStyle="bold" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnFatorial"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="n!" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnLog"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="log" />
 
     </GridLayout>
 
