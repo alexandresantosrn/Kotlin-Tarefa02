@@ -32,6 +32,10 @@ class MainActivity : AppCompatActivity() {
 
     private var expression: String = ""
 
+    // Pilhas para “congelar” o contexto ao abrir parênteses
+    private val opStack = ArrayDeque<String?>()
+    private val valStack = ArrayDeque<Double?>()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -87,6 +91,24 @@ class MainActivity : AppCompatActivity() {
 
         // Botão backspace
         findViewById<Button>(R.id.btnBackspace).setOnClickListener { backspace() }
+
+        // Botão de porcentagem
+        findViewById<Button>(R.id.btnPercent).setOnClickListener { onPercent() }
+
+        // Botão de quadrado
+        findViewById<Button>(R.id.btnSquare).setOnClickListener { onSquare() }
+
+        // Botões de parênteses
+        findViewById<Button>(R.id.btnOpenParen).setOnClickListener { onOpenParen() }
+        findViewById<Button>(R.id.btnCloseParen).setOnClickListener { onCloseParen() }
+
+        // Botão de raiz quadrada
+        findViewById<Button>(R.id.btnSqrt).setOnClickListener { onSqrt() }
+
+        // Botão de exponenciação
+        findViewById<Button>(R.id.btnPower).setOnClickListener { onOperator("^") }
+
+
 
         // Mapeia o botão
         btnToggleTheme = findViewById(R.id.btnToggleTheme)
@@ -162,6 +184,7 @@ class MainActivity : AppCompatActivity() {
                 Toast.makeText(this, "Divisão por zero", Toast.LENGTH_SHORT).show()
                 a
             } else a / b
+            "^" -> Math.pow(a, b) // Faz a operação de potenciação
             else -> b
         }
     }
@@ -294,5 +317,120 @@ class MainActivity : AppCompatActivity() {
             historyList.removeAt(0) // remove o mais antigo
         }
         historyList.add(operation)
+    }
+
+    private fun onPercent() {
+        // Precisa ter algo digitado
+        if (currentInput.isEmpty()) return
+
+        val value = currentInput.toDoubleOrNull() ?: return
+
+        val percentValue = if (operand != null && pendingOp != null) {
+            when (pendingOp) {
+                "+", "-" -> operand!! * (value / 100.0) // a ± a*(b/100)
+                "×", "÷" -> value / 100.0               // a × (b/100) ; a ÷ (b/100)
+                else -> value / 100.0
+            }
+        } else {
+            // Sem operação pendente: transforma o número em fração (b -> b/100)
+            value / 100.0
+        }
+
+        currentInput = formatNumber(percentValue)
+        updateDisplay()
+    }
+
+    private fun onSquare() {
+        if (currentInput.isNotEmpty()) {
+            val value = currentInput.toDoubleOrNull() ?: return
+            val squared = value * value
+            currentInput = formatNumber(squared)
+            updateDisplay()
+        } else if (operand != null && pendingOp == null) {
+            // Se não tem input, mas já tem resultado na tela
+            val squared = operand!! * operand!!
+            operand = squared
+            currentInput = formatNumber(squared)
+            updateDisplay()
+        }
+    }
+
+    private fun onSqrt() {
+        if (currentInput.isNotEmpty()) {
+            val value = currentInput.toDoubleOrNull() ?: return
+            if (value < 0) {
+                Toast.makeText(this, "Raiz inválida", Toast.LENGTH_SHORT).show()
+                return
+            }
+            val result = kotlin.math.sqrt(value)
+            currentInput = formatNumber(result)
+            updateDisplay()
+        } else if (operand != null && pendingOp == null) {
+            if (operand!! < 0) {
+                Toast.makeText(this, "Raiz inválida", Toast.LENGTH_SHORT).show()
+                return
+            }
+            val result = kotlin.math.sqrt(operand!!)
+            operand = result
+            currentInput = formatNumber(result)
+            updateDisplay()
+        }
+    }
+
+    private fun onInverse() {
+        if (currentInput.isNotEmpty()) {
+            val value = currentInput.toDoubleOrNull() ?: return
+            if (value == 0.0) {
+                Toast.makeText(this, "Divisão por zero", Toast.LENGTH_SHORT).show()
+                return
+            }
+            val result = 1 / value
+            currentInput = formatNumber(result)
+            updateDisplay()
+        } else if (operand != null && pendingOp == null) {
+            if (operand == 0.0) {
+                Toast.makeText(this, "Divisão por zero", Toast.LENGTH_SHORT).show()
+                return
+            }
+            val result = 1 / operand!!
+            operand = result
+            currentInput = formatNumber(result)
+            updateDisplay()
+        }
+    }
+
+    private fun onOpenParen() {
+        // Guarda o contexto atual sem “sumir” com o display
+        opStack.addLast(pendingOp)
+        valStack.addLast(operand)
+
+        // Prepara um novo cálculo dentro do parêntese
+        pendingOp = null
+        operand = null
+        currentInput = ""
+
+        // Apenas adiciona o símbolo "(" no display para o usuário ver
+        tvDisplay.text = expression + " ("
+    }
+
+
+    private fun onCloseParen() {
+        // Resolve a subexpressão atual em um único número
+        val typed = currentInput.toDoubleOrNull()
+        val res = when {
+            operand != null && typed != null && pendingOp != null ->
+                performOperation(operand!!, typed, pendingOp)
+            typed != null -> typed
+            operand != null -> operand!!
+            else -> 0.0
+        }
+
+        // Restaura o contexto anterior
+        pendingOp = if (opStack.isNotEmpty()) opStack.removeLast() else null
+        operand   = if (valStack.isNotEmpty()) valStack.removeLast() else null
+
+        // O resultado do parêntese vira o número corrente para continuar a expressão externa
+        currentInput = formatNumber(res)
+        updateDisplay()
     }
 }
