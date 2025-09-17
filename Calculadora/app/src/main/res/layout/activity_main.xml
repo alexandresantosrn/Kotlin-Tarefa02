@@ -167,6 +167,42 @@
             android:text="."
             android:textStyle="bold"
             android:backgroundTint="?attr/colorSecondary" />
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnPercent"
+            style="@style/Widget.Material3.Button"
+            android:text="%"
+            android:textStyle="bold"/>
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnSquare"
+            style="@style/Widget.Material3.Button"
+            android:text="x²"
+            android:textStyle="bold"/>
+
+        <!-- Linha 6 -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnOpenParen"
+            style="@style/Widget.Material3.Button"
+            android:text="("
+            android:textStyle="bold" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnCloseParen"
+            style="@style/Widget.Material3.Button"
+            android:text=")"
+            android:textStyle="bold" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnSqrt"
+            style="@style/Widget.Material3.Button"
+            android:text="√x"
+            android:textStyle="bold" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnPower"
+            style="@style/Widget.Material3.Button"
+            android:text="xʸ"
+            android:textStyle="bold" />
+
     </GridLayout>
 
     <Button
