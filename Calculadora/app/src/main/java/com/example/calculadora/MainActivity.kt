@@ -371,26 +371,4 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun onInverse() {
-        if (currentInput.isNotEmpty()) {
-            val value = currentInput.toDoubleOrNull() ?: return
-            if (value == 0.0) {
-                Toast.makeText(this, "Divisão por zero", Toast.LENGTH_SHORT).show()
-                return
-            }
-            val result = 1 / value
-            currentInput = formatNumber(result)
-            updateDisplay()
-        } else if (operand != null && pendingOp == null) {
-            if (operand == 0.0) {
-                Toast.makeText(this, "Divisão por zero", Toast.LENGTH_SHORT).show()
-                return
-            }
-            val result = 1 / operand!!
-            operand = result
-            currentInput = formatNumber(result)
-            updateDisplay()
-        }
-    }
-
 }
