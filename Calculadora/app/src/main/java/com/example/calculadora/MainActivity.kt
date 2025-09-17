@@ -11,6 +11,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import com.google.android.material.button.MaterialButton
+import kotlin.math.exp
 
 class MainActivity : AppCompatActivity() {
     private lateinit var tvDisplay: TextView
@@ -28,6 +29,8 @@ class MainActivity : AppCompatActivity() {
     private val historyList = mutableListOf<String>()
 
     private val maxHistory = 4
+
+    private var expression: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -144,6 +147,7 @@ class MainActivity : AppCompatActivity() {
 
             operand = null
             pendingOp = null
+            expression = ""
             currentInput = formatNumber(result)
             updateDisplay()
         }
@@ -166,20 +170,52 @@ class MainActivity : AppCompatActivity() {
         currentInput = ""
         operand = null
         pendingOp = null
+        expression = ""
         updateDisplay()
     }
 
     private fun backspace() {
-        if (currentInput.isNotEmpty()) {
-            currentInput = currentInput.dropLast(1)
-            updateDisplay()
+        when {
+            currentInput.isNotEmpty() -> {
+                // Apaga último dígito do número atual
+                currentInput = currentInput.dropLast(1)
+            }
+            pendingOp != null -> {
+                // Remove a operação se não houver número sendo digitado
+                pendingOp = null
+            }
+            operand != null -> {
+                // Remove o operando se não houver operador
+                operand = null
+            }
+            else -> {
+                // Já está vazio, não faz nada
+            }
         }
+        updateDisplay()
     }
 
     private fun updateDisplay() {
-        tvDisplay.text = currentInput.ifEmpty {
-            formatNumber(operand)
+        expression = when {
+            operand != null && pendingOp != null -> {
+                if (currentInput.isNotEmpty()) {
+                    "${formatNumber(operand)} $pendingOp $currentInput"
+                } else {
+                    "${formatNumber(operand)} $pendingOp"
+                }
+            }
+            currentInput.isNotEmpty() -> {
+                currentInput
+            }
+            operand != null -> {
+                formatNumber(operand)
+            }
+            else -> {
+                "0"
+            }
         }
+
+        tvDisplay.text = expression
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
