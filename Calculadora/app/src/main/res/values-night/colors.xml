@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Cores principais do app -->
+
+    <color name="colorPrimary">#2196F3</color> <!-- Azul para operações -->
+    <color name="colorOnPrimary">#FFFFFF</color> <!-- Texto branco em cima do azul -->
+
+    <color name="colorSecondary">#757575</color> <!-- Cinza claro para números -->
+    <color name="colorOnSecondary">#FFFFFF</color> <!-- Texto branco em cima do cinza -->
+
+    <!-- Botões especiais -->
+    <color name="colorClear">#F44336</color> <!-- Vermelho para Clear -->
+    <color name="colorOnClear">#FFFFFF</color> <!-- Texto branco -->
+
+    <color name="colorBackspace">#FF9800</color> <!-- Laranja para Backspace -->
+    <color name="colorOnBackspace">#FFFFFF</color> <!-- Texto branco -->
+
+    <!-- Fundo e Display -->
+    <color name="colorBackground">#FAFAFA</color> <!-- Fundo claro -->
+    <color name="colorBackgroundDark">#121212</color> <!-- Fundo escuro -->
+
+    <color name="colorDisplay">#212121</color> <!-- Fundo do display -->
+    <color name="colorOnDisplay">#FFFFFF</color> <!-- Texto do display -->
+</resources>
