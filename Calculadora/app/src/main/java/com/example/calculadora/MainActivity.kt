@@ -32,6 +32,10 @@ class MainActivity : AppCompatActivity() {
 
     private var expression: String = ""
 
+    // Pilhas para “congelar” o contexto ao abrir parênteses
+    private val opStack = ArrayDeque<String?>()
+    private val valStack = ArrayDeque<Double?>()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -99,6 +103,12 @@ class MainActivity : AppCompatActivity() {
 
         // Botão de exponenciação
         findViewById<Button>(R.id.btnPower).setOnClickListener { onOperator("^") }
+
+        // Botão fatorial
+        findViewById<Button>(R.id.btnFatorial).setOnClickListener { onFactorial() }
+
+        // Botão log
+        findViewById<Button>(R.id.btnLog).setOnClickListener { onLog() }
 
 
 
@@ -176,7 +186,8 @@ class MainActivity : AppCompatActivity() {
                 Toast.makeText(this, "Divisão por zero", Toast.LENGTH_SHORT).show()
                 a
             } else a / b
-            "^" -> Math.pow(a, b) // Faz a operação de potenciação
+            "^" -> Math.pow(a, b)
+            "%" -> (a * b) / 100.0
             else -> b
         }
     }
@@ -312,23 +323,15 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun onPercent() {
-        // Precisa ter algo digitado
-        if (currentInput.isEmpty()) return
-
-        val value = currentInput.toDoubleOrNull() ?: return
-
-        val percentValue = if (operand != null && pendingOp != null) {
-            when (pendingOp) {
-                "+", "-" -> operand!! * (value / 100.0) // a ± a*(b/100)
-                "×", "÷" -> value / 100.0               // a × (b/100) ; a ÷ (b/100)
-                else -> value / 100.0
+        if (currentInput.isNotEmpty()) {
+            val value = currentInput.toDoubleOrNull()
+            if (value != null) {
+                if (operand == null) operand = value
+                else operand = performOperation(operand!!, value, pendingOp)
             }
-        } else {
-            // Sem operação pendente: transforma o número em fração (b -> b/100)
-            value / 100.0
+            currentInput = ""
         }
-
-        currentInput = formatNumber(percentValue)
+        pendingOp = "%"
         updateDisplay()
     }
 
@@ -336,12 +339,15 @@ class MainActivity : AppCompatActivity() {
         if (currentInput.isNotEmpty()) {
             val value = currentInput.toDoubleOrNull() ?: return
             val squared = value * value
+
+            addUnaryHistory("x²", value, squared) // <-- histórico
+
             currentInput = formatNumber(squared)
-            prepareHistory(value, value, "*", squared)
             updateDisplay()
         } else if (operand != null && pendingOp == null) {
-            // Se não tem input, mas já tem resultado na tela
             val squared = operand!! * operand!!
+            addUnaryHistory("x²", operand!!, squared) // <-- histórico
+
             operand = squared
             currentInput = formatNumber(squared)
             updateDisplay()
@@ -356,8 +362,10 @@ class MainActivity : AppCompatActivity() {
                 return
             }
             val result = kotlin.math.sqrt(value)
+
+            addUnaryHistory("√", value, result)
+
             currentInput = formatNumber(result)
-            prepareHistory(value, value, "raiz", result)
             updateDisplay()
         } else if (operand != null && pendingOp == null) {
             if (operand!! < 0) {
@@ -365,10 +373,63 @@ class MainActivity : AppCompatActivity() {
                 return
             }
             val result = kotlin.math.sqrt(operand!!)
+
+            addUnaryHistory("√", operand!!, result)
+
             operand = result
             currentInput = formatNumber(result)
             updateDisplay()
         }
     }
 
+    private fun onFactorial() {
+        val value = currentInput.toDoubleOrNull()
+        if (value == null || value < 0 || value % 1 != 0.0) {
+            Toast.makeText(this, "Digite um número inteiro não negativo", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        val n = value.toInt()
+        var result = 1L
+        for (i in 1..n) {
+            result *= i
+        }
+
+        addUnaryHistory("!", value, result.toDouble())
+
+        currentInput = result.toString()
+        operand = null
+        pendingOp = null
+        updateDisplay()
+    }
+
+    // Logaritmo base 10
+    private fun onLog() {
+        val value = currentInput.toDoubleOrNull()
+        if (value == null || value <= 0) {
+            Toast.makeText(this, "Digite um número positivo", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        val result = kotlin.math.log10(value)
+
+        addUnaryHistory("log", value, result)
+
+        currentInput = result.toString()
+        operand = null
+        pendingOp = null
+        updateDisplay()
+    }
+
+    private fun addUnaryHistory(op: String, value: Double, result: Double) {
+        val historyEntry = when (op) {
+            "!" -> "${formatNumber(value)}! = ${formatNumber(result)}"
+            "log" -> "log(${formatNumber(value)}) = ${formatNumber(result)}"
+            "√" -> "√(${formatNumber(value)}) = ${formatNumber(result)}"
+            "x²" -> "(${formatNumber(value)})² = ${formatNumber(result)}"
+            "1/x" -> "1/(${formatNumber(value)}) = ${formatNumber(result)}"
+            else -> "$op(${formatNumber(value)}) = ${formatNumber(result)}"
+        }
+        addToHistory(historyEntry)
+    }
 }
