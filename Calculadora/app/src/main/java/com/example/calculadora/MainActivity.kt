@@ -184,7 +184,7 @@ class MainActivity : AppCompatActivity() {
                 Toast.makeText(this, "Divisão por zero", Toast.LENGTH_SHORT).show()
                 a
             } else a / b
-            "^" -> Math.pow(a, b)
+            "^" -> Math.pow(a, b) // Faz a operação de potenciação
             else -> b
         }
     }
